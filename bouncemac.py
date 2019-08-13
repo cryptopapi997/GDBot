@@ -7,3 +7,5 @@ import time
 def bounce():
     CGEventPost(kCGHIDEventTap, CGEventCreateKeyboardEvent(None, 0x7E, True))
     time.sleep(0.05)
+    CGEventPost(kCGHIDEventTap, CGEventCreateKeyboardEvent(None, 0x7E, False))
+

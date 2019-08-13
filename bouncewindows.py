@@ -51,3 +51,5 @@ def ReleaseKey(hexKeyCode):
 
 def bounce():
         PressKey(0xC8)
+        time.sleep(0.05)
+        ReleaseKey(0xC8)
