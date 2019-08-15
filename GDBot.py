@@ -9,6 +9,7 @@ def screen_record():
     alive = True
     i = 0
     gray_printscreen_2 =  None
+    start_time = time.time()
     while(True):
         # 550x600 (size of GD without the things behind the cube being recorded)
         printscreen =  np.array(pyscreenshot.grab(bbox=(250,40,800,640)))
@@ -20,7 +21,9 @@ def screen_record():
         if (i % 3 == 0):
             gray_printscreen_2 = gray_printscreen
         if(i % 7 == 0 and i % 3 != 0):
-            alive = isalive(gray_printscreen, gray_printscreen_2)
+            #checks if cube is alive, resets score if it isn't
+            if(not isalive(gray_printscreen, gray_printscreen_2, start_time)):
+                start_time = time.time()
         i = i +1
         cv2.imshow('window',gray_printscreen)
         #press q to exit screen recording
@@ -30,17 +33,16 @@ def screen_record():
 
 # compares two images and returns alive or dead. If the image is the "restart?"
 # screen, score will be 0.99+ which means the cube is dead. Else, it's alive
-def isalive(screen1, screen2):
-    start_time = time.time()
+def isalive(screen1, screen2,start_time):
     (score, diff) = compare_ssim(screen1, screen2, full=True)
     if(score < 0.995):
-        print("Alive: " +str(score))
         return True
-    else:      
-        print("Dead " + str(score))
+    else:
         #preliminary scoring for now
-        score_this_round = time.time() - start_time
+        score_this_round = time.time() - start_time    
+        print("Dead " + str(score_this_round))
         restart()
+        start_time = time.time()
         return False
 
 screen_record()
