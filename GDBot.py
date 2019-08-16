@@ -1,7 +1,7 @@
 import numpy as np
 import pyscreenshot
 import cv2
-from directinputmac import bounce, restart
+from DirectInputMac import bounce, restart
 import time
 from skimage.measure import compare_ssim
 import torch
