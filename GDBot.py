@@ -1,7 +1,6 @@
 import numpy as np
 import pyscreenshot
 import cv2
-from DirectInputMac import bounce, restart
 import time
 from skimage.measure import compare_ssim
 import torch
@@ -9,15 +8,22 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.transforms as T
+import platform
+
+if(platform.system() == "Windows"):
+    from DirectInputWindows import bounce, restart
+else:
+    from DirectInputMac import bounce, restart
+
 
 # Gets one frame
 def get_screen():
     # 550x600 (size of GD without the things behind the cube being recorded)
     screen =  np.array(pyscreenshot.grab(bbox=(250,40,800,640)))
     # simplify image
-    gray_screen = cv2.cvtColor(printscreen, cv2.COLOR_BGR2GRAY)
-    gray_screen = cv2.Canny(gray_printscreen, threshold1 = 200, threshold2=300)
-    return gray_screen   
+    gray_screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+    gray_screen = cv2.Canny(gray_screen, threshold1 = 200, threshold2=300)
+    return gray_screen
 
 # Records the screen and displays it
 def screen_record():
@@ -27,7 +33,7 @@ def screen_record():
     start_time = time.time()
     while(True):
         
-        get_screen()
+        gray_printscreen = get_screen()
         
         # Checks if dead every 7 frames
         if (i % 3 == 0):
