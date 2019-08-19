@@ -1,4 +1,5 @@
 import ctypes
+import time
 #simulates a keypress to bounce the cube on Windows
 
 SendInput = ctypes.windll.user32.SendInput
@@ -59,4 +60,3 @@ def restart():
         PressKey(0x39)
         time.sleep(0.05)
         ReleaseKey(0x39)
-
