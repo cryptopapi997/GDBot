@@ -10,6 +10,7 @@ from Helpers import get_screen,isalive
 import math
 import numpy as np
 from PIL import Image
+import time
 
 if(platform.system() == "Windows"):
     from DirectInputWindows import bounce, restart
@@ -51,7 +52,7 @@ class DQN(nn.Module):
 
     def __init__(self, h, w, outputs):
         super(DQN, self).__init__()
-        self.conv1 = nn.Conv2d(3, 16, kernel_size=5, stride=2)
+        self.conv1 = nn.Conv2d(1, 16, kernel_size=5, stride=2)
         self.bn1 = nn.BatchNorm2d(16)
         self.conv2 = nn.Conv2d(16, 32, kernel_size=5, stride=2)
         self.bn2 = nn.BatchNorm2d(32)
