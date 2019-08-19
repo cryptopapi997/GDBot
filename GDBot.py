@@ -10,7 +10,6 @@ from Helpers import get_screen,isalive
 import math
 import numpy as np
 from PIL import Image
-import time
 
 if(platform.system() == "Windows"):
     from DirectInputWindows import bounce, restart
@@ -18,7 +17,7 @@ else:
     from DirectInputMac import bounce, restart
 
 # Consists of a picture and the action the model took
-# and the resulting frame death and picture from that
+# and the resulting frame and reward from that
 Transition = namedtuple('Transition',
                         ('state', 'action', 'next_state', 'reward'))
 
@@ -76,6 +75,7 @@ class DQN(nn.Module):
         x = F.relu(self.bn3(self.conv3(x)))
         return self.head(x.view(x.size(0), -1))
 
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 n_actions = 2
 
@@ -88,9 +88,8 @@ EPS_DECAY = 200
 TARGET_UPDATE = 10
 num_episodes = 50
 
-
-policy_net = DQN(600, 550, 2).to(device)
-target_net = DQN(600, 550, 2).to(device)
+policy_net = DQN(43, 40, 2).to(device)
+target_net = DQN(43, 40, 2).to(device)
 target_net.load_state_dict(policy_net.state_dict())
 target_net.eval()
 
@@ -111,6 +110,7 @@ def select_action(state):
             # second column on max result is index of where max element was
             # found, so we pick action with the larger expected reward.
             return policy_net(state).max(1)[1].view(1, 1)
+
     else:
         return torch.tensor([[random.randrange(n_actions)]], device=device, dtype=torch.long)
 
@@ -193,8 +193,8 @@ for i_episode in range(num_episodes):
             alive = isalive(saved_screen, current_screen)
 
         # Observe new state
-        last_screen = current_screen
-        current_screen = get_screen()
+        last_screen = convert_to_n(get_screen())
+        current_screen = convert_to_n(get_screen())
         if alive:
             next_state = current_screen - last_screen
         else:
