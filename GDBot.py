@@ -10,6 +10,8 @@ from Helpers import get_screen,isalive
 import math
 import numpy as np
 from PIL import Image
+import warnings
+warnings.filterwarnings("ignore")
 
 if(platform.system() == "Windows"):
     from DirectInputWindows import bounce, restart
@@ -80,13 +82,13 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 n_actions = 2
 
 # Hyperparams
-BATCH_SIZE = 128
+BATCH_SIZE = 28
 GAMMA = 0.999
 EPS_START = 0.9
 EPS_END = 0.05
-EPS_DECAY = 200
+EPS_DECAY = 300
 TARGET_UPDATE = 10
-num_episodes = 50
+num_episodes = 500
 
 policy_net = DQN(43, 40, 2).to(device)
 target_net = DQN(43, 40, 2).to(device)
@@ -148,11 +150,9 @@ def optimize_model():
     next_state_values[non_final_mask] = target_net(non_final_next_states).max(1)[0].detach()
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
-
     # Compute Huber loss
     loss = F.smooth_l1_loss(state_action_values, expected_state_action_values.unsqueeze(1))
-
-    # Optimize the model
+     # Optimize the model
     optimizer.zero_grad()
     loss.backward()
     for param in policy_net.parameters():
@@ -169,7 +169,7 @@ def convert_to_n(screen):
 for i_episode in range(num_episodes):
     # Initialize the environment and state
     alive = True
-    i = 0
+    i = 1
     saved_screen =  None
     last_screen = convert_to_n(get_screen())
     current_screen = convert_to_n(get_screen())
@@ -179,19 +179,16 @@ for i_episode in range(num_episodes):
         # Select and perform an action
         action = select_action(state)
         if(action == 0):
-            pass
+            reward = i * 0.1
         else:
             bounce()
+            reward = i * 1
 
-        reward = 1
         reward = torch.tensor([reward], device=device)
 
-        if (i % 3 == 0):
-            saved_screen = current_screen
-        if(i % 7 == 0 and i % 3 != 0):
-            # Checks if cube is alive, resets score if it isn't
-            alive = isalive(saved_screen, current_screen)
-
+        saved_screen = get_screen()
+        alive = isalive(saved_screen, get_screen())
+        
         # Observe new state
         last_screen = convert_to_n(get_screen())
         current_screen = convert_to_n(get_screen())
@@ -199,7 +196,9 @@ for i_episode in range(num_episodes):
             next_state = current_screen - last_screen
         else:
             next_state = None
+            restart()
 
+        i = i + 1
         # Store the transition in memory
         memory.push(state, action, next_state, reward)
 
@@ -213,7 +212,8 @@ for i_episode in range(num_episodes):
     if i_episode % TARGET_UPDATE == 0:
         target_net.load_state_dict(policy_net.state_dict())
     print("Episode " + str(i_episode) + "done")
-    restart()
+    i = 1
+
 
 print('Complete')
 
