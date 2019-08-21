@@ -179,10 +179,10 @@ for i_episode in range(num_episodes):
         # Select and perform an action
         action = select_action(state)
         if(action == 0):
-            reward = i * 0.1
+            reward = i * 0.01
         else:
             bounce()
-            reward = i * 1
+            reward = i * 0.1
 
         reward = torch.tensor([reward], device=device)
 
