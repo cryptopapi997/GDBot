@@ -10,7 +10,6 @@ from Helpers import get_screen,isalive
 import math
 import numpy as np
 from PIL import Image
-from pynput.keyboard import Key, Listener
 import warnings
 warnings.filterwarnings("ignore")
 
