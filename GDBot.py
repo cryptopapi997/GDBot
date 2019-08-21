@@ -182,7 +182,7 @@ for i_episode in range(num_episodes):
             reward = i * 0.01
         else:
             bounce()
-            reward = i * 0.1
+            reward = i * 2
 
         reward = torch.tensor([reward], device=device)
 
