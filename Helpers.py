@@ -6,7 +6,7 @@ from skimage.measure import compare_ssim
 # Gets one frame
 def get_screen():
     # 550x600 (size of GD without the things behind the cube being recorded)
-    screen =  np.array(pyscreenshot.grab(bbox=(250,40,800,640)))
+    screen =  np.array(pyscreenshot.grab(bbox=(150,40,700,640)))
     # simplify image
     gray_screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
     gray_screen = cv2.Canny(gray_screen, threshold1 = 200, threshold2=300)
@@ -31,3 +31,4 @@ def screen_record():
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             break
+

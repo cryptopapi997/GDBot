@@ -10,6 +10,7 @@ from Helpers import get_screen,isalive
 import math
 import numpy as np
 from PIL import Image
+from pynput.keyboard import Key, Listener
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -179,10 +180,10 @@ for i_episode in range(num_episodes):
         # Select and perform an action
         action = select_action(state)
         if(action == 0):
-            reward = i * 0.1
+            reward = i * 0.01
         else:
             bounce()
-            reward = i * 1
+            reward = i * 0.1
 
         reward = torch.tensor([reward], device=device)
 
