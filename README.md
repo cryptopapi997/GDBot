@@ -4,8 +4,7 @@ A deep q network that plays Geometry Dash
 
 # Dependencies
 Python 3.6+  
-Run `pip3 install -r requirements.txt` to install remaining dependencies  
-Geometry Dash Game
+Run `pip3 install -r requirements.txt` to install remaining dependencies (or `pip install -r requirements.txt`, depending on your pip installation)
 
 # How to run
 
